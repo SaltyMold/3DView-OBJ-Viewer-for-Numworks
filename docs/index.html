@@ -343,48 +343,42 @@
     }
 
     // Gestion du bouton "Load sample OBJ"
+    const sampleFiles = [
+      "car.obj",
+      "cat.obj",
+      "fan.obj",
+      "moto.obj",
+      "padlock.obj"
+    ];
+
     document.getElementById('loadSampleBtn').onclick = function() {
       const modal = document.getElementById('sampleModal');
       const list = document.getElementById('sampleList');
-      list.innerHTML = '<li>Loading...</li>';
+      list.innerHTML = '';
       modal.classList.remove('hidden');
-      // Récupère la liste des fichiers .obj dans /sample/
-      fetch('/sample/')
-        .then(res => res.text())
-        .then(html => {
-          // On suppose que le serveur retourne un index HTML
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-          const files = Array.from(doc.querySelectorAll('a'))
-            .map(a => a.getAttribute('href'))
-            .filter(href => href && href.endsWith('.obj'));
-          if (files.length === 0) {
-            list.innerHTML = '<li>No OBJ files found.</li>';
-            return;
-          }
-          list.innerHTML = '';
-          files.forEach(file => {
-            const li = document.createElement('li');
-            li.style.margin = '8px 0';
-            const btn = document.createElement('button');
-            btn.textContent = file.replace(/^.*[\\/]/, '');
-            btn.onclick = function() {
-              fetch('/sample/' + file)
-                .then(res => res.text())
-                .then(objText => {
-                  document.getElementById('sampleModal').classList.add('hidden');
-                  // Crée un fichier virtuel
-                  const fakeFile = new File([objText], btn.textContent, {type: 'text/plain'});
-                  // Met le fichier dans l'input file
-                  const dataTransfer = new DataTransfer();
-                  dataTransfer.items.add(fakeFile);
-                  document.getElementById('objInput').files = dataTransfer.files;
-                });
-            };
-            li.appendChild(btn);
-            list.appendChild(li);
-          });
-        });
+      if (sampleFiles.length === 0) {
+        list.innerHTML = '<li>No OBJ files found.</li>';
+        return;
+      }
+      sampleFiles.forEach(file => {
+        const li = document.createElement('li');
+        li.style.margin = '8px 0';
+        const btn = document.createElement('button');
+        btn.textContent = file;
+        btn.onclick = function() {
+          fetch('sample/' + file)
+            .then(res => res.text())
+            .then(objText => {
+              document.getElementById('sampleModal').classList.add('hidden');
+              const fakeFile = new File([objText], btn.textContent, {type: 'text/plain'});
+              const dataTransfer = new DataTransfer();
+              dataTransfer.items.add(fakeFile);
+              document.getElementById('objInput').files = dataTransfer.files;
+            });
+        };
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
     };
 
     // Convert button logic with warning modal
