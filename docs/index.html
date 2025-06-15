@@ -37,80 +37,27 @@
       border: 1px solid #ddd;
       border-radius: 20px;
     }
-    button.close-btn,
-    #sampleModal button,
-    #warningModal button {
+    #convertisseur button {
+      display: inline-block;
+      margin: 15px 0;
+      padding: 6px 12px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.428571429;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
       background-color: #ffb734;
       color: #fff;
       border: 1px solid #ffb734;
       border-radius: 20px;
-      font-size: 17px;
-      font-weight: 700;
-      padding: 6px 12px;
-      cursor: pointer;
-      margin-top: 8px;
-      margin-bottom: 0;
-      min-width: 90px;
-      transition: background 0.2s, color 0.2s;
+      width: 100%;
     }
-    button.close-btn:hover,
-    #sampleModal button:hover,
-    #warningModal button:hover {
+    #convertisseur button:hover {
       background-color: rgb(255,164.9113300493,1);
       border-color: rgb(245.8,158.6197044335,0);
-      color: #fff;
     }
-    .row-btns {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .row-btns button {
-      flex: 1 1 0;
-      width: 100%;
-      min-width: 0;
-      display: block;
-      margin: 0;
-      padding: 6px 12px;
-      font-size: 17px;
-      font-weight: 700;
-      line-height: 1.428571429;
-      text-align: center;
-      white-space: nowrap;
-      vertical-align: middle;
-      cursor: pointer;
-      background-color: #9095e0;
-      color: #fff;
-      border: 1px solid #000000;
-      border-radius: 20px;
-    }
-    .row-btns button:hover {
-      background-color: #7077db;
-      border-color: rgb(0, 0, 0);
-    }
-
-    #convertBtn {
-      width: 100%;
-      display: block;
-      margin-top: 8px;
-      padding: 6px 12px;
-      font-size: 17px;
-      font-weight: 700;
-      line-height: 1.428571429;
-      text-align: center;
-      white-space: nowrap;
-      vertical-align: middle;
-      cursor: pointer;
-      background-color: #ffb734;
-      color: #fff;
-      border: 1px solid #000000;
-      border-radius: 20px;
-    }
-    #convertBtn:hover {
-      background-color: rgb(255,164.9113300493,1);
-      border-color: rgb(0, 0, 0);
-    }
-
     #sampleModal {
       position: fixed;
       top: 0; left: 0;
@@ -145,26 +92,6 @@
       color: #fff;
       border-color: #ffb734;
     }
-    #usageModal .usage-content {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 24px;
-    }
-    #usageModal ul {
-      padding-left: 18px;
-      margin: 0;
-    }
-    #usageModal img {
-      max-width: 160px;
-      height: auto;
-      display: block;
-    }
-    #usageModal .close-btn {
-      margin: 16px auto 0 auto;
-      display: block;
-    }
-    
   </style>
 </head>
 <body>
@@ -176,21 +103,26 @@
 
     <div class='header'>
       <div class='container text-center'>
+        <div class='page-header'>
+          <h1>3D OBJ to Numworks</h1>
+        </div>
       </div>
     </div>
 
     <div class='container' id="uploader-container">
       <div class='row'>
+        <div class='col-sm-6 col-sm-offset-3'>
+          <div id='uploader-app'>
+            <uploader></uploader>
+          </div>
+        </div>
       </div>
     </div>
 
     <div id="convertisseur">
       <h1>🧊 3D OBJ Converter → Numworks Application</h1>
       <input type="file" id="objInput" accept=".obj" />
-      <div class="row-btns">
-        <button id="loadSampleBtn" type="button">Load sample OBJ</button>
-        <button id="usageBtn" type="button">Usage</button>
-      </div>
+      <button id="loadSampleBtn" type="button">Load sample OBJ</button>
       <button id="convertBtn" type="button">Convert OBJ</button>
       <div id="sampleModal" class="hidden">
         <div>
@@ -201,6 +133,7 @@
       </div>
     </div>
 
+    <!-- Warning modal window -->
     <div id="warningModal" class="hidden" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2000;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
       <div style="background:#fff;padding:24px;border-radius:10px;max-width:400px;text-align:center;">
         <h2>⚠️ Warning</h2>
@@ -213,43 +146,26 @@
         <button onclick="document.getElementById('warningModal').classList.add('hidden')">Cancel</button>
       </div>
     </div>
-
-    <div id="usageModal" class="hidden" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2100;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
-      <div style="background:#fff;padding:24px 24px 12px 24px;border-radius:10px;max-width:600px;text-align:left;box-shadow:0 2px 12px #0002;">
-        <h2>Controls</h2>
-        <div class="usage-content">
-          <ul>
-            <li><b>Arrow up 🟠</b>: Go up</li>
-            <li><b>Arrow down 🟠</b>: Go down</li>
-            <li><b>Arrow left 🟠</b>: Go left</li>
-            <li><b>Arrow right 🟠</b>: Go right</li>
-            <li><b>OK 🟢</b>: Zoom in</li>
-            <li><b>Back 🟢</b>: Zoom out</li>
-            <li><b>Toolbox 🔵</b>: Camera up</li>
-            <li><b>SQRT 🔵</b>: Camera down</li>
-            <li><b>Imaginary 🔵</b>: Camera left</li>
-            <li><b>Power 🔵</b>: Camera right</li>
-            <li><b>Shift 🔴</b>: Debug mode</li>
-          </ul>
-          <img src="controls.png" alt="Controls">
-        </div>
-        <button class="close-btn" onclick="document.getElementById('usageModal').classList.add('hidden')">Close</button>
-      </div>
-    </div>
   </section>
 
   <script>
-    console.log("Html page loading...");
-
     document.getElementById("uploader-container").classList.add("hidden");
 
+    // Injection automatique de l'app .nwa AVANT tout
     let nwaInjected = false;
     let nwaInjectPromise = fetch("./app.nwa")
       .then(res => res.blob())
       .then(blob => {
+        const nwaFile = new File([blob], "OBJViewer.nwa", { type: "application/octet-stream" });
+        const uploader = document.querySelector("#uploader-app").__vue__.$children[0];
+        uploader.addNWA([nwaFile]);
+        nwaInjected = true;
+        console.log("✅ OBJViewer.nwa injecté automatiquement !");
+        // On attend que l'app soit bien ajoutée (petit délai)
         return new Promise(resolve => setTimeout(resolve, 800));
       });
 
+    // Parse OBJ file content and return {points, edges}
     function parseOBJ(text) {
       const points = [];
       const edgesSet = new Set();
@@ -273,6 +189,7 @@
       return { points, edges };
     }
 
+    // Write binary data as in the Python script
     function createBin(points, edges) {
       const buffer = new ArrayBuffer(8 + points.length * 12 + edges.length * 8);
       const view = new DataView(buffer);
@@ -291,6 +208,7 @@
       return buffer;
     }
 
+    // Modifié : accepte un fichier en paramètre (pour sample)
     function convertOBJ(file) {
       if (!file) file = document.getElementById('objInput').files[0];
       if (!file) return;
@@ -303,6 +221,12 @@
           const blob = new Blob([binBuffer], { type: "application/octet-stream" });
           const binFile = new File([blob], "model.bin", { type: "application/octet-stream" });
 
+          // Injection du .bin dans l'app fraichement ajoutée
+          const uploader = document.querySelector("#uploader-app").__vue__.$children[0];
+          const app = uploader.app_group.apps[0];
+          uploader.addExternalData(app, [binFile]);
+          console.log("✅ Fichier binaire envoyé :", binFile.name);
+
           document.getElementById("convertisseur").classList.add("hidden");
           document.getElementById("uploader-container").classList.remove("hidden");
           document.querySelectorAll('.drop-zone').forEach(el => el.style.display = 'none');
@@ -312,29 +236,17 @@
       });
     }
 
+    // Gestion du bouton "Load sample OBJ"
     document.getElementById('loadSampleBtn').onclick = function() {
       const modal = document.getElementById('sampleModal');
-      let list = document.getElementById('sampleList');
-      if (!list) {
-        list = document.createElement('ul');
-        list.id = 'sampleList';
-        list.style.listStyle = 'none';
-        list.style.padding = '0';
-        list.style.margin = '0';
-        modal.innerHTML = '';
-        modal.appendChild(document.createElement('div'));
-        modal.firstChild.appendChild(document.createElement('h2')).textContent = 'Choose a sample OBJ';
-        modal.firstChild.appendChild(list);
-        const cancelBtn = document.createElement('button');
-        cancelBtn.textContent = 'Cancel';
-        cancelBtn.onclick = function() { modal.classList.add('hidden'); };
-        modal.firstChild.appendChild(cancelBtn);
-      }
+      const list = document.getElementById('sampleList');
       list.innerHTML = '<li>Loading...</li>';
       modal.classList.remove('hidden');
-      fetch('sample/')
+      // Récupère la liste des fichiers .obj dans /sample/
+      fetch('/sample/')
         .then(res => res.text())
         .then(html => {
+          // On suppose que le serveur retourne un index HTML
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, 'text/html');
           const files = Array.from(doc.querySelectorAll('a'))
@@ -351,11 +263,13 @@
             const btn = document.createElement('button');
             btn.textContent = file.replace(/^.*[\\/]/, '');
             btn.onclick = function() {
-              fetch('sample/' + file)
+              fetch('/sample/' + file)
                 .then(res => res.text())
                 .then(objText => {
                   document.getElementById('sampleModal').classList.add('hidden');
+                  // Crée un fichier virtuel
                   const fakeFile = new File([objText], btn.textContent, {type: 'text/plain'});
+                  // Met le fichier dans l'input file
                   const dataTransfer = new DataTransfer();
                   dataTransfer.items.add(fakeFile);
                   document.getElementById('objInput').files = dataTransfer.files;
@@ -367,6 +281,7 @@
         });
     };
 
+    // Convert button logic with warning modal
     document.getElementById('convertBtn').onclick = function() {
       document.getElementById('warningModal').classList.remove('hidden');
       window._pendingOBJFile = document.getElementById('objInput').files[0];
@@ -374,10 +289,6 @@
     document.getElementById('warningConfirmBtn').onclick = function() {
       document.getElementById('warningModal').classList.add('hidden');
       convertOBJ(window._pendingOBJFile);
-    };
-
-    document.getElementById('usageBtn').onclick = function() {
-      document.getElementById('usageModal').classList.remove('hidden');
     };
 
     document.getElementById("uploader-container").classList.add("hidden");
