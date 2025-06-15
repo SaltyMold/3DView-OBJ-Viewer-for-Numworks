@@ -37,9 +37,8 @@
       border: 1px solid #ddd;
       border-radius: 20px;
     }
-    #convertisseur button {
+    #convertBtn {
       display: inline-block;
-      margin: 15px 0;
       padding: 6px 12px;
       font-size: 17px;
       font-weight: 700;
@@ -50,13 +49,17 @@
       cursor: pointer;
       background-color: #ffb734;
       color: #fff;
-      border: 1px solid #ffb734;
+      border: 1px solid #000000;
       border-radius: 20px;
       width: 100%;
     }
-    #convertisseur button:hover {
-      background-color: rgb(255,164.9113300493,1);
-      border-color: rgb(245.8,158.6197044335,0);
+    #convertBtn {
+      background-color: ffb734;
+      border-color: rgb(0, 0, 0);
+    }
+    #convertBtn:hover {
+      background-color: #ffa501;
+      border-color: rgb(0, 0, 0);
     }
     #sampleModal {
       position: fixed;
@@ -92,6 +95,83 @@
       color: #fff;
       border-color: #ffb734;
     }
+    #usageModal .usage-content {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 24px;
+    }
+    #usageModal ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+    #usageModal img {
+      max-width: 160px;
+      height: auto;
+      display: block;
+    }
+    #usageModal .close-btn {
+      margin: 16px auto 0 auto;
+      display: block;
+    }
+
+    .row-btns {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .row-btns button {
+      flex: 1 1 0;
+      width: 100%;
+      min-width: 0;
+      display: block;
+      margin: 0;
+      padding: 6px 12px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.428571429;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #9095e0;
+      color: #fff;
+      border: 1px solid #000000;
+      border-radius: 20px;
+    }
+    .row-btns button:hover {
+      background-color: #7077db;
+      border-color: rgb(0, 0, 0);
+    }
+    #cancelWarning,
+    #cancelSample,
+    #closeControl,
+    #warningConfirmBtn {
+    display: inline-block;
+    padding: 6px 18px;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #ffb734;
+    color: #fff;
+    border: 1px solid #000000;
+    border-radius: 20px;
+    margin: 8px 4px 0 0;
+    transition: background 0.2s, color 0.2s;
+    }
+    #cancelWarning:hover,
+    #cancelSample:hover,
+    #closeControl:hover,
+    #warningConfirmBtn:hover {
+    background-color: #ffa501;
+    color: #fff;
+    border-color: #000000;
+}
+    
   </style>
 </head>
 <body>
@@ -122,13 +202,16 @@
     <div id="convertisseur">
       <h1>🧊 3D OBJ Converter → Numworks Application</h1>
       <input type="file" id="objInput" accept=".obj" />
-      <button id="loadSampleBtn" type="button">Load sample OBJ</button>
+      <div class="row-btns">
+        <button id="loadSampleBtn" type="button">Load sample OBJ</button>
+        <button class="usageBtn" onclick="document.getElementById('usageModal').classList.remove('hidden')">Usage</button>
+      </div>
       <button id="convertBtn" type="button">Convert OBJ</button>
       <div id="sampleModal" class="hidden">
         <div>
           <h2>Choose a sample OBJ</h2>
           <ul id="sampleList" style="list-style:none;padding:0;margin:0;"></ul>
-          <button onclick="document.getElementById('sampleModal').classList.add('hidden')">Cancel</button>
+          <button id="cancelSample" onclick="document.getElementById('sampleModal').classList.add('hidden')">Cancel</button>
         </div>
       </div>
     </div>
@@ -143,7 +226,30 @@
           Please make sure to save them before launching the app.
         </p>
         <button id="warningConfirmBtn" style="margin:10px 8px 0 0;">Continue</button>
-        <button onclick="document.getElementById('warningModal').classList.add('hidden')">Cancel</button>
+        <button id="cancelWarning" onclick="document.getElementById('warningModal').classList.add('hidden')">Cancel</button>
+      </div>
+    </div>
+
+    <div id="usageModal" class="hidden" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2100;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+      <div style="background:#fff;padding:24px 24px 12px 24px;border-radius:10px;max-width:600px;text-align:left;box-shadow:0 2px 12px #0002;">
+        <h2>Controls</h2>
+        <div class="usage-content">
+          <ul>
+            <li><b>Arrow up 🟠</b>: Go up</li>
+            <li><b>Arrow down 🟠</b>: Go down</li>
+            <li><b>Arrow left 🟠</b>: Go left</li>
+            <li><b>Arrow right 🟠</b>: Go right</li>
+            <li><b>OK 🟢</b>: Zoom in</li>
+            <li><b>Back 🟢</b>: Zoom out</li>
+            <li><b>Toolbox 🔵</b>: Camera up</li>
+            <li><b>SQRT 🔵</b>: Camera down</li>
+            <li><b>Imaginary 🔵</b>: Camera left</li>
+            <li><b>Power 🔵</b>: Camera right</li>
+            <li><b>Shift 🔴</b>: Debug mode</li>
+          </ul>
+          <img src="controls.png" alt="Controls">
+        </div>
+        <button class="close-btn" id="closeControl" onclick="document.getElementById('usageModal').classList.add('hidden')">Close</button>
       </div>
     </div>
   </section>
@@ -155,7 +261,7 @@
     let nwaInjected = false;
     let nwaInjectPromise = fetch("./app.nwa")
       .then(res => res.blob())
-      .then(blob => {
+      .then(blob => {   
         const nwaFile = new File([blob], "OBJViewer.nwa", { type: "application/octet-stream" });
         const uploader = document.querySelector("#uploader-app").__vue__.$children[0];
         uploader.addNWA([nwaFile]);
