@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>3D OBJ to Numworks</title>
+  <link type="text/css" rel="stylesheet" href="style.css" media="all">
+  <style>
+    .hidden {
+      display: none !important;
+    }
+    #convertisseur {
+      font-family: 'Source Sans Pro', Helvetica Neue, Helvetica, Arial, sans-serif;
+      background: #fff;
+      padding: 15px;
+      color: #444;
+      max-width: 700px;
+      margin: 1rem auto;
+      border: 1px solid #ddd;
+      border-radius: 0;
+      box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    }
+    #convertisseur h1 {
+      font-weight: 200;
+      font-size: 30px;
+      margin: 0 0 15px 0;
+      color: #222;
+    }
+    #convertisseur input[type="file"] {
+      display: block;
+      margin: 15px 0;
+      width: 100%;
+      padding: 6px 12px;
+      font-size: 17px;
+      line-height: 1.428571429;
+      color: #444;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+    }
+    button.close-btn,
+    #sampleModal button,
+    #warningModal button {
+      background-color: #ffb734;
+      color: #fff;
+      border: 1px solid #ffb734;
+      border-radius: 20px;
+      font-size: 17px;
+      font-weight: 700;
+      padding: 6px 12px;
+      cursor: pointer;
+      margin-top: 8px;
+      margin-bottom: 0;
+      min-width: 90px;
+      transition: background 0.2s, color 0.2s;
+    }
+    button.close-btn:hover,
+    #sampleModal button:hover,
+    #warningModal button:hover {
+      background-color: rgb(255,164.9113300493,1);
+      border-color: rgb(245.8,158.6197044335,0);
+      color: #fff;
+    }
+    .row-btns {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .row-btns button {
+      flex: 1 1 0;
+      width: 100%;
+      min-width: 0;
+      display: block;
+      margin: 0;
+      padding: 6px 12px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.428571429;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #9095e0;
+      color: #fff;
+      border: 1px solid #000000;
+      border-radius: 20px;
+    }
+    .row-btns button:hover {
+      background-color: #7077db;
+      border-color: rgb(0, 0, 0);
+    }
+
+    #convertBtn {
+      width: 100%;
+      display: block;
+      margin-top: 8px;
+      padding: 6px 12px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.428571429;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #ffb734;
+      color: #fff;
+      border: 1px solid #000000;
+      border-radius: 20px;
+    }
+    #convertBtn:hover {
+      background-color: rgb(255,164.9113300493,1);
+      border-color: rgb(0, 0, 0);
+    }
+
+    #sampleModal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.3);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #sampleModal > div {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 90vw;
+      max-height: 80vh;
+      overflow: auto;
+    }
+    #sampleList button {
+      margin: 4px 0;
+      width: 100%;
+      border-radius: 8px;
+      background: #eee;
+      color: #222;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      padding: 6px 0;
+      cursor: pointer;
+    }
+    #sampleList button:hover {
+      background: #ffb734;
+      color: #fff;
+      border-color: #ffb734;
+    }
+    #usageModal .usage-content {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 24px;
+    }
+    #usageModal ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+    #usageModal img {
+      max-width: 160px;
+      height: auto;
+      display: block;
+    }
+    #usageModal .close-btn {
+      margin: 16px auto 0 auto;
+      display: block;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <section>
+    <div class="container container-alerts"></div>
+
+    <script src="script.js"></script>
+
+    <div class='header'>
+      <div class='container text-center'>
+      </div>
+    </div>
+
+    <div class='container' id="uploader-container">
+      <div class='row'>
+      </div>
+    </div>
+
+    <div id="convertisseur">
+      <h1>🧊 3D OBJ Converter → Numworks Application</h1>
+      <input type="file" id="objInput" accept=".obj" />
+      <div class="row-btns">
+        <button id="loadSampleBtn" type="button">Load sample OBJ</button>
+        <button id="usageBtn" type="button">Usage</button>
+      </div>
+      <button id="convertBtn" type="button">Convert OBJ</button>
+      <div id="sampleModal" class="hidden">
+        <div>
+          <h2>Choose a sample OBJ</h2>
+          <ul id="sampleList" style="list-style:none;padding:0;margin:0;"></ul>
+          <button onclick="document.getElementById('sampleModal').classList.add('hidden')">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="warningModal" class="hidden" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2000;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+      <div style="background:#fff;padding:24px;border-radius:10px;max-width:400px;text-align:center;">
+        <h2>⚠️ Warning</h2>
+        <p>
+          Installing third-party applications may cause your calculator to crash.<br>
+          This is not dangerous, but <b>you will lose your Python scripts</b>.<br>
+          Please make sure to save them before launching the app.
+        </p>
+        <button id="warningConfirmBtn" style="margin:10px 8px 0 0;">Continue</button>
+        <button onclick="document.getElementById('warningModal').classList.add('hidden')">Cancel</button>
+      </div>
+    </div>
+
+    <div id="usageModal" class="hidden" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2100;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+      <div style="background:#fff;padding:24px 24px 12px 24px;border-radius:10px;max-width:600px;text-align:left;box-shadow:0 2px 12px #0002;">
+        <h2>Controls</h2>
+        <div class="usage-content">
+          <ul>
+            <li><b>Arrow up 🟠</b>: Go up</li>
+            <li><b>Arrow down 🟠</b>: Go down</li>
+            <li><b>Arrow left 🟠</b>: Go left</li>
+            <li><b>Arrow right 🟠</b>: Go right</li>
+            <li><b>OK 🟢</b>: Zoom in</li>
+            <li><b>Back 🟢</b>: Zoom out</li>
+            <li><b>Toolbox 🔵</b>: Camera up</li>
+            <li><b>SQRT 🔵</b>: Camera down</li>
+            <li><b>Imaginary 🔵</b>: Camera left</li>
+            <li><b>Power 🔵</b>: Camera right</li>
+            <li><b>Shift 🔴</b>: Debug mode</li>
+          </ul>
+          <img src="controls.png" alt="Controls">
+        </div>
+        <button class="close-btn" onclick="document.getElementById('usageModal').classList.add('hidden')">Close</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById("uploader-container").classList.add("hidden");
+
+    let nwaInjected = false;
+    let nwaInjectPromise = fetch("./app.nwa")
+      .then(res => res.blob())
+      .then(blob => {
+        return new Promise(resolve => setTimeout(resolve, 800));
+      });
+
+    function parseOBJ(text) {
+      const points = [];
+      const edgesSet = new Set();
+      const lines = text.split('\n');
+      for (let line of lines) {
+        line = line.trim();
+        if (line.startsWith('v ')) {
+          const [, x, y, z] = line.split(/\s+/);
+          points.push([parseFloat(x), parseFloat(y), parseFloat(z)]);
+        } else if (line.startsWith('f ')) {
+          const parts = line.split(/\s+/).slice(1);
+          const idx = parts.map(part => parseInt(part.split('/')[0], 10) - 1);
+          for (let i = 0; i < idx.length; i++) {
+            const a = idx[i], b = idx[(i + 1) % idx.length];
+            const edge = a < b ? `${a},${b}` : `${b},${a}`;
+            edgesSet.add(edge);
+          }
+        }
+      }
+      const edges = Array.from(edgesSet).map(e => e.split(',').map(Number));
+      return { points, edges };
+    }
+
+    function createBin(points, edges) {
+      const buffer = new ArrayBuffer(8 + points.length * 12 + edges.length * 8);
+      const view = new DataView(buffer);
+      let offset = 0;
+      view.setInt32(offset, points.length, true); offset += 4;
+      view.setInt32(offset, edges.length, true); offset += 4;
+      for (const [x, y, z] of points) {
+        view.setFloat32(offset, x, true); offset += 4;
+        view.setFloat32(offset, y, true); offset += 4;
+        view.setFloat32(offset, z, true); offset += 4;
+      }
+      for (const [a, b] of edges) {
+        view.setInt32(offset, a, true); offset += 4;
+        view.setInt32(offset, b, true); offset += 4;
+      }
+      return buffer;
+    }
+
+    function convertOBJ(file) {
+      if (!file) file = document.getElementById('objInput').files[0];
+      if (!file) return;
+      nwaInjectPromise.then(() => {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const text = event.target.result;
+          const { points, edges } = parseOBJ(text);
+          const binBuffer = createBin(points, edges);
+          const blob = new Blob([binBuffer], { type: "application/octet-stream" });
+          const binFile = new File([blob], "model.bin", { type: "application/octet-stream" });
+
+          document.getElementById("convertisseur").classList.add("hidden");
+          document.getElementById("uploader-container").classList.remove("hidden");
+          document.querySelectorAll('.drop-zone').forEach(el => el.style.display = 'none');
+          document.querySelectorAll('.close').forEach(el => el.style.display = 'none');
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    document.getElementById('loadSampleBtn').onclick = function() {
+      const modal = document.getElementById('sampleModal');
+      let list = document.getElementById('sampleList');
+      if (!list) {
+        list = document.createElement('ul');
+        list.id = 'sampleList';
+        list.style.listStyle = 'none';
+        list.style.padding = '0';
+        list.style.margin = '0';
+        modal.innerHTML = '';
+        modal.appendChild(document.createElement('div'));
+        modal.firstChild.appendChild(document.createElement('h2')).textContent = 'Choose a sample OBJ';
+        modal.firstChild.appendChild(list);
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = function() { modal.classList.add('hidden'); };
+        modal.firstChild.appendChild(cancelBtn);
+      }
+      list.innerHTML = '<li>Loading...</li>';
+      modal.classList.remove('hidden');
+      fetch('/sample/')
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const files = Array.from(doc.querySelectorAll('a'))
+            .map(a => a.getAttribute('href'))
+            .filter(href => href && href.endsWith('.obj'));
+          if (files.length === 0) {
+            list.innerHTML = '<li>No OBJ files found.</li>';
+            return;
+          }
+          list.innerHTML = '';
+          files.forEach(file => {
+            const li = document.createElement('li');
+            li.style.margin = '8px 0';
+            const btn = document.createElement('button');
+            btn.textContent = file.replace(/^.*[\\/]/, '');
+            btn.onclick = function() {
+              fetch('/sample/' + file)
+                .then(res => res.text())
+                .then(objText => {
+                  document.getElementById('sampleModal').classList.add('hidden');
+                  const fakeFile = new File([objText], btn.textContent, {type: 'text/plain'});
+                  const dataTransfer = new DataTransfer();
+                  dataTransfer.items.add(fakeFile);
+                  document.getElementById('objInput').files = dataTransfer.files;
+                });
+            };
+            li.appendChild(btn);
+            list.appendChild(li);
+          });
+        });
+    };
+
+    document.getElementById('convertBtn').onclick = function() {
+      document.getElementById('warningModal').classList.remove('hidden');
+      window._pendingOBJFile = document.getElementById('objInput').files[0];
+    };
+    document.getElementById('warningConfirmBtn').onclick = function() {
+      document.getElementById('warningModal').classList.add('hidden');
+      convertOBJ(window._pendingOBJFile);
+    };
+
+    document.getElementById('usageBtn').onclick = function() {
+      document.getElementById('usageModal').classList.remove('hidden');
+    };
+
+    document.getElementById("uploader-container").classList.add("hidden");
+  </script>
+</body>
+</html>
