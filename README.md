@@ -12,6 +12,8 @@
 
 _This app is an **3D OBJ viewer** that runs on the **[NumWorks Calculator](https://www.numworks.com)**._
 
+![3DView](https://github.com/user-attachments/assets/79cc4cd6-515b-41ef-b843-43aae30e8adb)
+
 ## Install the app
 
 To install this app, you'll need to:
