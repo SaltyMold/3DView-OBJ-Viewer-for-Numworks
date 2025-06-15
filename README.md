@@ -84,7 +84,8 @@ To install this app, you'll need to:
   </tr>
 </table>
 
-⚠️⚠️⚠️<strong>Installing third-party applications may cause your calculator to crash. This is not dangerous, but you will lose your Python scripts. Please make sure to save them before launching the app.</strong>
+> [!CAUTION]
+> Installing third-party applications may cause your calculator to crash. This is not dangerous, but you will lose your Python scripts. Please make sure to save them before launching the app..
 
 ## How I created this application
 
