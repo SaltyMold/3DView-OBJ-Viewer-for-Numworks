@@ -331,7 +331,7 @@
       }
       list.innerHTML = '<li>Loading...</li>';
       modal.classList.remove('hidden');
-      fetch('/sample/')
+      fetch('sample/')
         .then(res => res.text())
         .then(html => {
           const parser = new DOMParser();
@@ -350,7 +350,7 @@
             const btn = document.createElement('button');
             btn.textContent = file.replace(/^.*[\\/]/, '');
             btn.onclick = function() {
-              fetch('/sample/' + file)
+              fetch('sample/' + file)
                 .then(res => res.text())
                 .then(objText => {
                   document.getElementById('sampleModal').classList.add('hidden');
