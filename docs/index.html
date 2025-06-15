@@ -369,16 +369,33 @@
             const btn = document.createElement('button');
             btn.textContent = file.replace(/^.*[\\/]/, '');
             btn.onclick = function() {
-              fetch('/sample/' + file)
-                .then(res => res.text())
-                .then(objText => {
-                  document.getElementById('sampleModal').classList.add('hidden');
-                  // Crée un fichier virtuel
-                  const fakeFile = new File([objText], btn.textContent, {type: 'text/plain'});
-                  // Met le fichier dans l'input file
-                  const dataTransfer = new DataTransfer();
-                  dataTransfer.items.add(fakeFile);
-                  document.getElementById('objInput').files = dataTransfer.files;
+              fetch('/sample/index.json')
+                .then(res => res.json())
+                .then(files => {
+                  if (!files.length) {
+                    list.innerHTML = '<li>No OBJ files found.</li>';
+                    return;
+                  }
+                  list.innerHTML = '';
+                  files.forEach(file => {
+                    const li = document.createElement('li');
+                    li.style.margin = '8px 0';
+                    const btn = document.createElement('button');
+                    btn.textContent = file;
+                    btn.onclick = function() {
+                      fetch('/sample/' + file)
+                        .then(res => res.text())
+                        .then(objText => {
+                          document.getElementById('sampleModal').classList.add('hidden');
+                          const fakeFile = new File([objText], btn.textContent, {type: 'text/plain'});
+                          const dataTransfer = new DataTransfer();
+                          dataTransfer.items.add(fakeFile);
+                          document.getElementById('objInput').files = dataTransfer.files;
+                        });
+                    };
+                    li.appendChild(btn);
+                    list.appendChild(li);
+                  });
                 });
             };
             li.appendChild(btn);
