@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>3D OBJ to Numworks</title>
-  <link type="text/css" rel="stylesheet" href="/style.css" media="all">
+  <link type="text/css" rel="stylesheet" href="style.css" media="all">
   <style>
     .hidden {
       display: none !important;
@@ -330,34 +330,39 @@
       }
       list.innerHTML = '<li>Loading...</li>';
       modal.classList.remove('hidden');
-      fetch('/sample/sample-list.json')
-      .then(res => res.json())
-      .then(files => {
-        if (!files.length) {
-          list.innerHTML = '<li>No OBJ files found.</li>';
-          return;
-        }
-        list.innerHTML = '';
-        files.forEach(file => {
-          const li = document.createElement('li');
-          li.style.margin = '8px 0';
-          const btn = document.createElement('button');
-          btn.textContent = file;
-          btn.onclick = function() {
-            fetch('/sample/' + file)
-              .then(res => res.text())
-              .then(objText => {
-                document.getElementById('sampleModal').classList.add('hidden');
-                const fakeFile = new File([objText], btn.textContent, {type: 'text/plain'});
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(fakeFile);
-                document.getElementById('objInput').files = dataTransfer.files;
-              });
-          };
-          li.appendChild(btn);
-          list.appendChild(li);
+      fetch('/sample/')
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const files = Array.from(doc.querySelectorAll('a'))
+            .map(a => a.getAttribute('href'))
+            .filter(href => href && href.endsWith('.obj'));
+          if (files.length === 0) {
+            list.innerHTML = '<li>No OBJ files found.</li>';
+            return;
+          }
+          list.innerHTML = '';
+          files.forEach(file => {
+            const li = document.createElement('li');
+            li.style.margin = '8px 0';
+            const btn = document.createElement('button');
+            btn.textContent = file.replace(/^.*[\\/]/, '');
+            btn.onclick = function() {
+              fetch('/sample/' + file)
+                .then(res => res.text())
+                .then(objText => {
+                  document.getElementById('sampleModal').classList.add('hidden');
+                  const fakeFile = new File([objText], btn.textContent, {type: 'text/plain'});
+                  const dataTransfer = new DataTransfer();
+                  dataTransfer.items.add(fakeFile);
+                  document.getElementById('objInput').files = dataTransfer.files;
+                });
+            };
+            li.appendChild(btn);
+            list.appendChild(li);
+          });
         });
-      });
     };
 
     document.getElementById('convertBtn').onclick = function() {
