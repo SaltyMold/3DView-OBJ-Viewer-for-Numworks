@@ -1,3 +1,5 @@
+console.log("script.js loaded");
+
 (function() {
     var t = {
         4520: function() {},
