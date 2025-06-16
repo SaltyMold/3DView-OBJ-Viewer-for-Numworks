@@ -1,6 +1,6 @@
 <h1 align="center">3DView OBJ Viewer for the Numworks Calculator</h1>
 <p align="center">
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.0.1-blue?style=for-the-badge&color=blue">
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.0.2-blue?style=for-the-badge&color=blue">
     <img alt="Stars" src="https://img.shields.io/github/stars/SaltyMold/3DView-OBJ-Viewer-for-Numworks?style=for-the-badge&color=magenta">
     <img alt="Forks" src="https://img.shields.io/github/forks/SaltyMold/3DView-OBJ-Viewer-for-Numworks?color=cyan&style=for-the-badge&color=purple">
     <img alt="License" src="https://img.shields.io/github/license/SaltyMold/3DView-OBJ-Viewer-for-Numworks?style=for-the-badge&color=blue">
@@ -78,10 +78,14 @@ To install this app, you'll need to:
           <td>Shift 🔴</td>
           <td>Debud Mode</td>
         </tr>
+        <tr>
+          <td>Zero 🟣</td>
+          <td>Auto Camera Mode</td>
+        </tr>
       </table>
     </td>
     <td style="padding-left: 20px;">
-      <img src="https://github.com/user-attachments/assets/4b8f30cd-dd9e-433c-9a84-17c8da3230cd" width="250" alt="Controls">
+      <img src="https://github.com/user-attachments/assets/0e8799f2-e444-443b-827b-d1920631a4e3" width="250" alt="Controls">
     </td>
   </tr>
 </table>
