@@ -1,6 +1,6 @@
 <h1 align="center">3DView OBJ Viewer for the Numworks Calculator</h1>
 <p align="center">
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.0.2-blue?style=for-the-badge&color=blue">
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.0.3-blue?style=for-the-badge&color=blue">
     <img alt="Stars" src="https://img.shields.io/github/stars/SaltyMold/3DView-OBJ-Viewer-for-Numworks?style=for-the-badge&color=magenta">
     <img alt="Forks" src="https://img.shields.io/github/forks/SaltyMold/3DView-OBJ-Viewer-for-Numworks?color=cyan&style=for-the-badge&color=purple">
     <img alt="License" src="https://img.shields.io/github/license/SaltyMold/3DView-OBJ-Viewer-for-Numworks?style=for-the-badge&color=blue">
