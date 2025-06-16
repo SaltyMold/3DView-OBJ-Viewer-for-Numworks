@@ -11,6 +11,14 @@
 
 #define FMT_FLOAT(x) (int)(x), (int)(abs((int)(fabsf((x) * 100)) % 100))
 
+/*
+To add :
+
+automatic moving camera with mode
+add more info to debug mode
+
+*/
+
 const char eadk_app_name[] __attribute__((section(".rodata.eadk_app_name"))) = "3DView";
 const uint32_t eadk_api_level  __attribute__((section(".rodata.eadk_api_level"))) = 0;
 
@@ -148,66 +156,72 @@ int main() {
   screen(cam_theta, cam_phi, cam_dist, scale, center_x, center_y, center_z);
 
   bool is_debug = false;
+  bool is_cam_mode = false;
+
+  uint32_t elapsed;
 
   while (true) {
-    eadk_keyboard_state_t keys = eadk_keyboard_scan();
     bool redraw = false;
 
-    if (eadk_keyboard_key_down(keys, eadk_key_imaginary)) {
-      cam_theta += 0.05f;
-      redraw = true;
-    }
-    if (eadk_keyboard_key_down(keys, eadk_key_power)) {
-      cam_theta -= 0.05f;
-      redraw = true;
-    }
-    if (eadk_keyboard_key_down(keys, eadk_key_toolbox)) {
-      cam_phi += 0.05f;
-      if (cam_phi > 1.5f) cam_phi = 1.5f;
-      redraw = true;
-    }
-    if (eadk_keyboard_key_down(keys, eadk_key_sqrt)) {
-      cam_phi -= 0.05f;
-      if (cam_phi < -1.5f) cam_phi = -1.5f;
-      redraw = true;
-    }
+    eadk_keyboard_state_t keys = eadk_keyboard_scan();
 
-    float move_speed = 0.2f;
-    float forward[3], right[3], up[3];
-    camera_axes(cam_theta, cam_phi, forward, right, up);
+    if (!is_cam_mode) {
+      if (eadk_keyboard_key_down(keys, eadk_key_imaginary)) {
+        cam_theta += 0.05f;
+        redraw = true;
+      }
+      if (eadk_keyboard_key_down(keys, eadk_key_power)) {
+        cam_theta -= 0.05f;
+        redraw = true;
+      }
+      if (eadk_keyboard_key_down(keys, eadk_key_toolbox)) {
+        cam_phi += 0.05f;
+        if (cam_phi > 1.5f) cam_phi = 1.5f;
+        redraw = true;
+      }
+      if (eadk_keyboard_key_down(keys, eadk_key_sqrt)) {
+        cam_phi -= 0.05f;
+        if (cam_phi < -1.5f) cam_phi = -1.5f;
+        redraw = true;
+      }
 
-    if (eadk_keyboard_key_down(keys, eadk_key_up)) {
-      center_x += up[0] * move_speed;
-      center_y += up[1] * move_speed;
-      center_z += up[2] * move_speed;
-      redraw = true;
-    }
-    if (eadk_keyboard_key_down(keys, eadk_key_down)) {
-      center_x -= up[0] * move_speed;
-      center_y -= up[1] * move_speed;
-      center_z -= up[2] * move_speed;
-      redraw = true;
-    }
-    if (eadk_keyboard_key_down(keys, eadk_key_left)) {
-      center_x += right[0] * move_speed;
-      center_y += right[1] * move_speed;
-      center_z += right[2] * move_speed;
-      redraw = true;
-    }
-    if (eadk_keyboard_key_down(keys, eadk_key_right)) {
-      center_x -= right[0] * move_speed;
-      center_y -= right[1] * move_speed;
-      center_z -= right[2] * move_speed;
-      redraw = true;
-    }
+      float move_speed = 0.2f;
+      float forward[3], right[3], up[3];
+      camera_axes(cam_theta, cam_phi, forward, right, up);
 
-    if (eadk_keyboard_key_down(keys, eadk_key_ok)) {
-      scale *= 1.05f;
-      redraw = true;
-    }
-    if (eadk_keyboard_key_down(keys, eadk_key_back)) {
-      scale /= 1.05f;
-      redraw = true;
+      if (eadk_keyboard_key_down(keys, eadk_key_up)) {
+        center_x += up[0] * move_speed;
+        center_y += up[1] * move_speed;
+        center_z += up[2] * move_speed;
+        redraw = true;
+      }
+      if (eadk_keyboard_key_down(keys, eadk_key_down)) {
+        center_x -= up[0] * move_speed;
+        center_y -= up[1] * move_speed;
+        center_z -= up[2] * move_speed;
+        redraw = true;
+      }
+      if (eadk_keyboard_key_down(keys, eadk_key_left)) {
+        center_x += right[0] * move_speed;
+        center_y += right[1] * move_speed;
+        center_z += right[2] * move_speed;
+        redraw = true;
+      }
+      if (eadk_keyboard_key_down(keys, eadk_key_right)) {
+        center_x -= right[0] * move_speed;
+        center_y -= right[1] * move_speed;
+        center_z -= right[2] * move_speed;
+        redraw = true;
+      }
+
+      if (eadk_keyboard_key_down(keys, eadk_key_ok)) {
+        scale *= 1.05f;
+        redraw = true;
+      }
+      if (eadk_keyboard_key_down(keys, eadk_key_back)) {
+        scale /= 1.05f;
+        redraw = true;
+      }
     }
 
     if (eadk_keyboard_key_down(keys, eadk_key_home)) {
@@ -220,17 +234,39 @@ int main() {
       while (eadk_keyboard_scan() != 0) eadk_timing_msleep(100);
     }
 
-    if (redraw) {
+    if (eadk_keyboard_key_down(keys, eadk_key_zero)) {
+      is_cam_mode = !is_cam_mode;
+      redraw = true;
+      while (eadk_keyboard_scan() != 0) eadk_timing_msleep(100);
+    }
+
+    if (!is_cam_mode){
+      if (redraw) {
+        uint32_t start = (uint32_t)eadk_timing_millis();
+        screen(cam_theta, cam_phi, cam_dist, scale, center_x, center_y, center_z);
+        uint32_t end = (uint32_t)eadk_timing_millis();
+        elapsed = end - start;
+      }
+    }
+    else {
+      uint32_t start = (uint32_t)eadk_timing_millis();
+
+      cam_theta += 0.02f;
+
       screen(cam_theta, cam_phi, cam_dist, scale, center_x, center_y, center_z);
+      eadk_display_draw_string("Camera Mode... Press 0 to quit", (eadk_point_t){0, 225}, false, eadk_color_black, eadk_color_white);
+
+      uint32_t end = (uint32_t)eadk_timing_millis();
+      elapsed = end - start;
     }
 
     if (is_debug) {
       char buf[128];
       snprintf(buf, sizeof(buf),
-        "Cam: theta=%d.%02d, phi=%d.%02d, scale=%d.%02d\nCenter: (%d.%02d, %d.%02d, %d.%02d)",
+        "Cam: theta=%d.%02d, phi=%d.%02d, scale=%d.%02d\nCenter: (%d.%02d, %d.%02d, %d.%02d)\nFramerate: %u ms",
         FMT_FLOAT(cam_theta), FMT_FLOAT(cam_phi), FMT_FLOAT(scale),
-        FMT_FLOAT(center_x), FMT_FLOAT(center_y), FMT_FLOAT(center_z));
-      eadk_display_draw_string(buf, (eadk_point_t){0, 10}, false, eadk_color_black, eadk_color_white);
+        FMT_FLOAT(center_x), FMT_FLOAT(center_y), FMT_FLOAT(center_z), elapsed);
+      eadk_display_draw_string(buf, (eadk_point_t){0, 0}, false, eadk_color_black, eadk_color_white);
     }
 
     eadk_timing_msleep(30);
