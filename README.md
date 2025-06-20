@@ -14,14 +14,14 @@ _This app is an **3D OBJ viewer** that runs on the **[NumWorks Calculator](https
 
 ![3DView](https://github.com/user-attachments/assets/79cc4cd6-515b-41ef-b843-43aae30e8adb)
 
-## Install the app
+## 📕 Install the app
 
 To install this app, you'll need to:
 1. Go to this page I have created : https://saltymold.github.io/3DView-OBJ-Viewer-for-Numworks/
 2. Upload your **`.obj`** file (or load a sample **`.obj`** file) and connect your calculator
 3. And you'r done, just click install and enjoy
 
-## How to use the app
+## ⚙️ How to use the app
 
 <table>
   <tr>
