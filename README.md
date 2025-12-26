@@ -102,4 +102,3 @@ This application works by converting a 3D `.obj` file into a binary format (`.bi
 I made tutorials here :
 - [C-App-Guide-for-Numworks](https://github.com/SaltyMold/C-App-Guide-for-Numworks)
 - [Numworks-App-Development-Template](https://github.com/SaltyMold/Numworks-App-Development-Template)
-- 
